@@ -1,50 +1,72 @@
-# Welcome to your Expo app 👋
+# 📱 Hako Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Hako** is a lightweight mobile application for small and local retailers to manage products, stock in/out, and generate invoices. Built with **React Native** using **Expo**, it aims to bring digital convenience to traditional stores.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Tech Stack
 
-   ```bash
-   npm install
-   ```
+- **React Native (Expo)**
+- **Firebase** (Authentication, Firestore, Cloud Functions)
+- **React Navigation** (v6)
+- **Redux Toolkit** (state management)
+- **TypeScript**
+- **React Hook Form** (form management)
+- **Tailwind CSS** (via `nativewind`)
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🛠️ Setup Instructions
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. **Clone the repo:**
 
 ```bash
-npm run reset-project
+git clone https://github.com/HakoTeam/hako-app.git
+cd hako-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+````
 
-## Learn more
+2. **Install dependencies:**
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm install
+# or
+yarn install
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+3. **Run the app:**
 
-## Join the community
+```bash
+npx expo start
+```
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🧪 Testing
+
+- Coming soon: Using `Jest` + `React Native Testing Library`
+
+---
+
+## 📦 Build
+
+```bash
+npx expo build:android
+npx expo build:ios
+```
+
+Or use `EAS Build`:
+
+```bash
+eas build --platform android
+```
+
+---
+
+## 👥 Contributors
+
+- 🧠 Product: [Thai Thi Ngoc Kim](https://github.com/ngockim109/)
+- 🧑‍💻 Frontend: [Thai Thi Ngoc Kim](https://github.com/ngockim109/)
+- 🧑‍🔧 Backend & Infra: [Thai Ngoc Quyen](https://github.com/quuynXp)
+````
