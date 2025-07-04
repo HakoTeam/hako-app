@@ -25,8 +25,6 @@ git clone https://github.com/HakoTeam/hako-app.git
 cd hako-app
 ```
 
-````
-
 2. **Install dependencies:**
 
 ```bash
@@ -69,4 +67,7 @@ eas build --platform android
 - 🧠 Product: [Thai Thi Ngoc Kim](https://github.com/ngockim109/)
 - 🧑‍💻 Frontend: [Thai Thi Ngoc Kim](https://github.com/ngockim109/)
 - 🧑‍🔧 Backend & Infra: [Thai Ngoc Quyen](https://github.com/quuynXp)
-````
+
+```
+
+```
