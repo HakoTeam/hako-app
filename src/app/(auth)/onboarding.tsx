@@ -3,6 +3,7 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import { onboardingData } from "@/constants/onboarding";
 import { strings } from "@/constants/strings";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { Dimensions, FlatList, Image } from "react-native";
@@ -23,7 +24,7 @@ export default function OnboardingScreen() {
   };
 
   const handleGetStarted = async () => {
-    // await AsyncStorage.setItem("onboarding_seen", "true");
+    await AsyncStorage.setItem("onboarding_seen", "true");
     router.replace("/(auth)/phone-input");
   };
 

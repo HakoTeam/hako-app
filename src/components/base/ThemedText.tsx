@@ -20,10 +20,11 @@ export function ThemedText({
     subtitle: "text-xl font-bold",
     link: "text-base leading-7 text-sky-600",
   }[type];
+
   const combinedClassName = [
     typeClass,
-    className,
     color ? `text-${color}` : "text-foreground",
+    className,
   ].join(" ");
 
   return <Text className={combinedClassName} style={style} {...rest} />;

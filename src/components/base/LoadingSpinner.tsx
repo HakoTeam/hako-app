@@ -12,10 +12,7 @@ interface LoadingSpinnerProps {
 
 export function Loading({ className, color, size }: LoadingSpinnerProps) {
   return (
-    <ActivityIndicator
-      size={size}
-      className={`${className} ${color ? `text-${color}` : "text-primary"}`}
-    />
+    <ActivityIndicator size={size} className={`${className}`} color={color} />
   );
 }
 
@@ -29,9 +26,12 @@ export function LoadingSpinner({
     <ThemedView className="flex-1 justify-center items-center">
       <ActivityIndicator
         size={size}
-        className={`${className} ${color ? `text-${color}` : "text-primary"}`}
+        className={`${color ? `text-${color}` : "text-primary"} ${className}`}
+        color={color}
       />
-      <ThemedText className="text-primary font-montserrat mt-4">
+      <ThemedText
+        className={`${color ? `text-${color}` : "text-primary"} font-montserrat mt-4`}
+      >
         {message}
       </ThemedText>
     </ThemedView>

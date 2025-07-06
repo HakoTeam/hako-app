@@ -4,7 +4,7 @@ import { ThemedText } from "./ThemedText";
 
 type ThemedButtonProps = TouchableOpacityProps & {
   title: string;
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "destructive";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 };
@@ -21,7 +21,8 @@ export function ThemedButton({
   const variantStyles = {
     primary: "bg-primary",
     secondary: "bg-secondary",
-    outline: "bg-transparent border border-border",
+    outline: "bg-transparent border border-primary",
+    destructive: "bg-destructive",
   };
 
   const sizeStyles = {
@@ -31,13 +32,13 @@ export function ThemedButton({
   };
 
   const textColors = {
-    primary: "primary-foreground",
-    secondary: "secondary-foreground",
-    outline: "foreground",
+    primary: "text-primary-foreground",
+    secondary: "text-secondary-foreground",
+    outline: "text-primary",
+    destructive: "text-destructive-foreground",
   };
 
   const isDisabled = disabled || loading;
-
   return (
     <TouchableOpacity
       className={`${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50" : ""} ${className}`.trim()}
@@ -46,10 +47,13 @@ export function ThemedButton({
     >
       <ThemedText
         type="defaultSemiBold"
-        color={textColors[variant]}
-        className="text-center"
+        className={`text-center ${textColors[variant]}`}
       >
-        {loading ? <Loading /> : title}
+        {loading ? (
+          <Loading color={variant === "outline" ? "#9CA3AF" : "#FFFFFF"} />
+        ) : (
+          title
+        )}
       </ThemedText>
     </TouchableOpacity>
   );
