@@ -16,7 +16,7 @@ export function ThemedText({
   const typeClass = {
     default: "text-base leading-6",
     defaultSemiBold: "text-base leading-6 font-semibold",
-    title: "text-4xl font-bold leading-8",
+    title: "text-4xl font-bold leading-10",
     subtitle: "text-xl font-bold",
     link: "text-base leading-7 text-sky-600",
   }[type];

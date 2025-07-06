@@ -4,9 +4,10 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
 import { useAuthStore } from "@/stores/auth";
+import { showErrorToast, showInfoToast } from "@/utils/toast";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Alert, TextInput } from "react-native";
+import { TextInput } from "react-native";
 
 export default function OTPScreen() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function OTPScreen() {
   const handleVerify = async () => {
     const otpString = otp.join("");
     if (otpString.length !== 6) {
-      Alert.alert(strings.error, strings.enterValidOtp);
+      showInfoToast(strings.enterValidOtp);
       return;
     }
 
@@ -57,7 +58,7 @@ export default function OTPScreen() {
       // onVerify(otpString);
       router.push("/(auth)/password");
     } catch (error) {
-      Alert.alert(strings.error, strings.invalidOtp);
+      showErrorToast(strings.invalidOtp);
     } finally {
       setLoading(false);
     }
@@ -91,7 +92,9 @@ export default function OTPScreen() {
           {otp.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(ref) => (inputRefs.current[index] = ref)}
+              ref={(ref) => {
+                inputRefs.current[index] = ref;
+              }}
               className="w-12 border border-border rounded-lg text-center text-lg font-semibold text-foreground bg-input"
               value={digit}
               onChangeText={(value) => handleOtpChange(value, index)}

@@ -20,14 +20,14 @@ export const getStrengthText = (strength: number) => {
   switch (strength) {
     case 0:
     case 1:
-      return { text: strings.passwordStrengthWeak, color: "destructive" };
+      return { text: strings.passwordStrengthWeak, color: "red-500" };
     case 2:
     case 3:
-      return { text: strings.passwordStrengthMedium, color: "#FFA500" };
+      return { text: strings.passwordStrengthMedium, color: "yellow-500" };
     case 4:
     case 5:
-      return { text: strings.passwordStrengthStrong, color: "primary" };
+      return { text: strings.passwordStrengthStrong, color: "green-500" };
     default:
-      return { text: strings.passwordStrengthWeak, color: "destructive" };
+      return { text: strings.passwordStrengthWeak, color: "red-500" };
   }
 };

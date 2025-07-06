@@ -77,4 +77,14 @@ export const strings = {
   alertPasswordMismatch: "Mật khẩu không khớp",
   alertCreateAccountFailed: "Tạo tài khoản thất bại",
   alertInvalidPassword: "Mật khẩu không đúng",
+
+  // Toast
+  toastSuccessTitle: "Thành công",
+  toastSuccessDescription: "Thao tác đã được thực hiện thành công.",
+  toastErrorTitle: "Lỗi",
+  toastErrorDescription: "Đã xảy ra lỗi. Vui lòng thử lại.",
+  toastInfoTitle: "Thông tin",
+  toastInfoDescription: "Đây là thông báo thông tin.",
+  toastWarnTitle: "Cảnh báo",
+  toastWarnDescription: "Đây là thông báo cảnh báo.",
 };

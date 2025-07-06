@@ -6,10 +6,10 @@ import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
 import { useAuthStore } from "@/stores/auth";
+import { showErrorToast } from "@/utils/toast";
 import { getPasswordStrength, getStrengthText } from "@/utils/validate";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert } from "react-native";
 
 export default function PasswordScreen() {
   const router = useRouter();
@@ -22,18 +22,18 @@ export default function PasswordScreen() {
 
   const handleSubmit = async () => {
     if (!password.trim()) {
-      Alert.alert(strings.error, strings.alertMissingPassword);
+      showErrorToast(strings.alertMissingPassword);
       return;
     }
 
     if (isNewUser) {
       if (password.length < 8) {
-        Alert.alert(strings.error, strings.alertPasswordTooShort);
+        showErrorToast(strings.alertPasswordTooShort);
         return;
       }
 
       if (password !== confirmPassword) {
-        Alert.alert(strings.error, strings.alertPasswordMismatch);
+        showErrorToast(strings.alertPasswordMismatch);
         return;
       }
     }
@@ -45,8 +45,7 @@ export default function PasswordScreen() {
 
       router.replace("/");
     } catch (error) {
-      Alert.alert(
-        strings.error,
+      showErrorToast(
         isNewUser
           ? strings.alertCreateAccountFailed
           : strings.alertInvalidPassword
@@ -89,10 +88,7 @@ export default function PasswordScreen() {
 
           {isNewUser && password.length > 0 && (
             <ThemedView className="mt-2">
-              <ThemedText
-                className="text-sm"
-                style={{ color: strengthDisplay.color }}
-              >
+              <ThemedText className="text-sm" color={strengthDisplay.color}>
                 {strings.passwordStrengthLabel} {strengthDisplay.text}
               </ThemedText>
               <ThemedView className="flex-row mt-1 space-x-1">
@@ -101,7 +97,7 @@ export default function PasswordScreen() {
                     key={level}
                     className={`flex-1 h-1 rounded ${
                       level <= strengthInfo
-                        ? strengthInfo <= 2
+                        ? strengthInfo <= 1
                           ? "bg-destructive"
                           : strengthInfo <= 3
                             ? "bg-yellow-500"

@@ -4,10 +4,10 @@ import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
 import { useAuthStore } from "@/stores/auth";
+import { showErrorToast } from "@/utils/toast";
 import { validatePhoneNumber } from "@/utils/validate";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert } from "react-native";
 
 export default function PhoneInputScreen() {
   const router = useRouter();
@@ -17,12 +17,12 @@ export default function PhoneInputScreen() {
 
   const handleContinue = async () => {
     if (!phoneNumber.trim()) {
-      Alert.alert(strings.error, strings.alertMissingPhoneNumber);
+      showErrorToast(strings.alertMissingPhoneNumber);
       return;
     }
 
     if (!validatePhoneNumber(phoneNumber)) {
-      Alert.alert(strings.error, strings.alertInvalidPhoneNumber);
+      showErrorToast(strings.alertInvalidPhoneNumber);
       return;
     }
 
@@ -35,7 +35,7 @@ export default function PhoneInputScreen() {
       setPhoneNumber(phoneNumber);
       router.push("/(auth)/otp-verify");
     } catch (error) {
-      Alert.alert(strings.error, strings.alertFailedToSendOTP);
+      showErrorToast(strings.alertFailedToSendOTP);
     } finally {
       setLoading(false);
     }
