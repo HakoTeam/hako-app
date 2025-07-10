@@ -46,13 +46,13 @@ const ThemedPasswordInput = ({
       >
         {showPassword ? (
           <Ionicons
-            name="eye-outline"
+            name="eye-off-outline"
             size={24}
             className="text-muted-foreground"
           />
         ) : (
           <Ionicons
-            name="eye-off-outline"
+            name="eye-outline"
             size={24}
             className="text-muted-foreground"
           />

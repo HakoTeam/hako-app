@@ -36,6 +36,12 @@ export const strings = {
   enterValidOtp: "Vui lòng nhập đầy đủ mã OTP",
   invalidOtp: "Mã OTP không chính xác. Vui lòng thử lại.",
   noReceivedOtp: "Không nhận được mã?",
+  alertAuthInvalidPhoneNumber: "Số điện thoại không hợp lệ.",
+  otpExpired: "Mã xác thực đã hết hạn.",
+  otpSent: "Mã OTP đã được gửi thành công.",
+  noOtpSession: "Không tìm thấy phiên OTP.",
+  noPhoneNumber: "Không tìm thấy số điện thoại.",
+  otpVerified: "Xác minh số điện thoại thành công.",
 
   // Password
   passwordRegisterTitle: "Tạo mật khẩu",
@@ -59,6 +65,10 @@ export const strings = {
   passwordButtonHide: "Ẩn mật khẩu",
   passwordButtonSubmitNewUser: "Tạo tài khoản",
   passwordButtonSubmitExistingUser: "Đăng nhập",
+  passwordRequirements: "Yêu cầu mật khẩu",
+  minimumLength: "Ít nhất 8 ký tự",
+  includeUppercase: "Bao gồm chữ in hoa",
+  includeNumbers: "Bao gồm chữ số",
 
   // Success
   loginSuccess: "Đăng nhập thành công",
@@ -70,6 +80,8 @@ export const strings = {
   errorInvalidOtp: "Mã OTP không chính xác",
   errorPasswordMismatch: "Mật khẩu không khớp",
   errorWeakPassword: "Mật khẩu quá yếu",
+  genericError: "Đã xảy ra lỗi, vui lòng thử lại.",
+  tooManyRequests: "Bạn đã yêu cầu quá nhiều lần, vui lòng thử lại sau.",
 
   // Alerts
   alertMissingPassword: "Vui lòng nhập mật khẩu",

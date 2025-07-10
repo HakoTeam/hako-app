@@ -3,19 +3,25 @@ import { ThemedButton } from "@/components/base/ThemedButton";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
-import { useAuthStore } from "@/stores/auth";
-import { showErrorToast, showInfoToast } from "@/utils/toast";
+import { usePhoneAuth } from "@/contexts/PhoneAuthContext";
+import { useAuthSession } from "@/stores/auth";
+import { showErrorToast } from "@/utils/toast";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { TextInput } from "react-native";
 
 export default function OTPScreen() {
   const router = useRouter();
-  const { phoneNumber, setUser } = useAuthStore();
+  const { phoneNumber, setUser } = useAuthSession();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+  const {
+    verifyOTP,
+    resendOTP,
+    isLoading: loading,
+    clearError,
+  } = usePhoneAuth();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -24,6 +30,17 @@ export default function OTPScreen() {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    clearError();
+  }, []);
+
+  useEffect(() => {
+    const otpString = otp.join("");
+    if (otpString.length === 6) {
+      handleVerify();
+    }
+  }, [otp]);
 
   const handleOtpChange = (value: string, index: number) => {
     if (value.length > 1) return;
@@ -47,28 +64,26 @@ export default function OTPScreen() {
   const handleVerify = async () => {
     const otpString = otp.join("");
     if (otpString.length !== 6) {
-      showInfoToast(strings.enterValidOtp);
+      showErrorToast(strings.enterValidOtp);
       return;
     }
 
-    setLoading(true);
-    try {
-      // Here you would verify OTP with Firebase
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // onVerify(otpString);
+    const { verified, phoneNumber: verifiedPhone } = await verifyOTP(otpString);
+    if (verified) {
+      // setUser(userData);
       router.push("/(auth)/password");
-    } catch (error) {
-      showErrorToast(strings.invalidOtp);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleResend = async () => {
     if (resendTimer > 0) return;
 
-    setResendTimer(60);
-    // onResend();
+    const success = await resendOTP();
+    if (success) {
+      setResendTimer(60);
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
+    }
   };
 
   return (

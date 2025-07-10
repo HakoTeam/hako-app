@@ -3,41 +3,44 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
-import { useAuthStore } from "@/stores/auth";
+import { usePhoneAuth } from "@/contexts/PhoneAuthContext";
+import { useAuthSession } from "@/stores/auth";
 import { showErrorToast } from "@/utils/toast";
 import { validatePhoneNumber } from "@/utils/validate";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PhoneInputScreen() {
   const router = useRouter();
-  const { setPhoneNumber } = useAuthStore();
-  const [phoneNumber, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { phoneNumber, setPhoneNumber } = useAuthSession();
+  const [phone, setPhone] = useState("");
+  const { sendOTP, isLoading: loading, clearError } = usePhoneAuth();
+
+  useEffect(() => {
+    if (phoneNumber && !phone) {
+      setPhone(phoneNumber);
+    }
+  }, [phoneNumber]);
+
+  useEffect(() => {
+    clearError();
+  }, []);
 
   const handleContinue = async () => {
-    if (!phoneNumber.trim()) {
+    if (!phone.trim()) {
       showErrorToast(strings.alertMissingPhoneNumber);
       return;
     }
 
-    if (!validatePhoneNumber(phoneNumber)) {
+    if (!validatePhoneNumber(phone)) {
       showErrorToast(strings.alertInvalidPhoneNumber);
       return;
     }
 
-    setLoading(true);
-    try {
-      // Here you would typically send OTP via Firebase
-      // For now, we'll simulate the API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+    const success = await sendOTP(phone);
+    if (success) {
       setPhoneNumber(phoneNumber);
       router.push("/(auth)/otp-verify");
-    } catch (error) {
-      showErrorToast(strings.alertFailedToSendOTP);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -58,7 +61,7 @@ export default function PhoneInputScreen() {
         </ThemedText>
         <ThemedTextInput
           placeholder={strings.phoneInputPlaceholder}
-          value={phoneNumber}
+          value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
           autoComplete="tel"

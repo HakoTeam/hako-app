@@ -3,3 +3,8 @@ export interface IUser {
   phoneNumber: string;
   email?: string;
 }
+
+export interface ICreateUserData {
+  name: string;
+  email: string;
+}

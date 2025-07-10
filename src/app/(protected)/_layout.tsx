@@ -1,5 +1,4 @@
 import { getStorageItem } from "@/services/storage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import { Redirect, SplashScreen, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -26,12 +25,9 @@ export default function ProtectedLayout() {
   useEffect(() => {
     async function checkAuthState() {
       try {
-        console.log("Check auth");
-        AsyncStorage.setItem("onboarding_seen", "false");
         const onboardingComplete = await getStorageItem("onboarding_seen");
         const userPhone = await getStorageItem("user_phone");
         const authToken = await getStorageItem("auth_token");
-        console.log(onboardingComplete, authToken);
 
         setHasOnboarded(onboardingComplete === "true");
         setIsAuthenticated(!!authToken);
@@ -53,8 +49,6 @@ export default function ProtectedLayout() {
   if (!fontsLoaded || !isReady) {
     return null;
   }
-
-  console.log("Render state:", { hasOnboarded, isAuthenticated, isReady });
 
   if (!hasOnboarded) return <Redirect href="/(auth)/onboarding" />;
   if (!hasUserPhone) return <Redirect href="/(auth)/phone-input" />;

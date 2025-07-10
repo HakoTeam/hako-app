@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.hako.hakoapp"
+      "package": "com.hako.hakoapp",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

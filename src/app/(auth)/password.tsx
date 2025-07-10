@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthSession } from "@/stores/auth";
 import { showErrorToast } from "@/utils/toast";
 import { getPasswordStrength, getStrengthText } from "@/utils/validate";
 import { useRouter } from "expo-router";
@@ -13,7 +13,7 @@ import { useState } from "react";
 
 export default function PasswordScreen() {
   const router = useRouter();
-  const { phoneNumber, user } = useAuthStore();
+  const { phoneNumber, user } = useAuthSession();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -112,18 +112,34 @@ export default function PasswordScreen() {
         </ThemedView>
 
         {isNewUser && (
-          <ThemedView className="mt-4">
-            <ThemedText type="defaultSemiBold" className="mb-2">
-              {strings.passwordConfirmLabel}
-            </ThemedText>
-            <ThemedTextInput
-              placeholder={strings.passwordConfirmPlaceholder}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry={!showPassword}
-              autoComplete="new-password"
-            />
-          </ThemedView>
+          <>
+            <ThemedView className="mt-4">
+              <ThemedText type="defaultSemiBold" className="mb-2">
+                {strings.passwordConfirmLabel}
+              </ThemedText>
+              <ThemedTextInput
+                placeholder={strings.passwordConfirmPlaceholder}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={!showPassword}
+                autoComplete="new-password"
+              />
+            </ThemedView>
+            <ThemedView className="mt-4 gap-2">
+              <ThemedText className="text-muted-foreground">
+                {strings.passwordRequirements}:
+              </ThemedText>
+              <ThemedText className="text-muted-foreground">
+                • {strings.minimumLength}
+              </ThemedText>
+              <ThemedText className="text-muted-foreground">
+                • {strings.includeUppercase}
+              </ThemedText>
+              <ThemedText className="text-muted-foreground">
+                • {strings.includeNumbers}
+              </ThemedText>
+            </ThemedView>
+          </>
         )}
       </ThemedView>
 
