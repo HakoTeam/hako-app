@@ -60,7 +60,7 @@ export default function PasswordScreen() {
 
   return (
     <ThemedView color="background" className="flex-1 px-6 justify-center">
-      <GoBackButton />
+      <GoBackButton steps={2} />
       <ThemedView className="mb-8">
         <ThemedText type="title" className="text-center mb-4">
           {isNewUser

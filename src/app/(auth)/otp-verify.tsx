@@ -14,13 +14,17 @@ export default function OTPScreen() {
   const router = useRouter();
   const { phoneNumber, setUser } = useAuthSession();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [fullOtp, setFullOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(60);
+  const [isVerifying, setIsVerifying] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+  const hiddenInputRef = useRef<TextInput | null>(null);
   const {
     verifyOTP,
     resendOTP,
     isLoading: loading,
     clearError,
+    hasActiveOTPSession,
   } = usePhoneAuth();
 
   useEffect(() => {
@@ -37,10 +41,26 @@ export default function OTPScreen() {
 
   useEffect(() => {
     const otpString = otp.join("");
-    if (otpString.length === 6) {
+    if (otpString.length === 6 && !isVerifying) {
       handleVerify();
     }
-  }, [otp]);
+  }, [otp, isVerifying]);
+
+  useEffect(() => {
+    if (fullOtp.length === 6) {
+      const otpArray = fullOtp.split("");
+      setOtp(otpArray);
+      setFullOtp(""); // Clear the hidden input
+    }
+  }, [fullOtp]);
+
+  // Handle navigation when OTP session becomes inactive (auto-verification completed)
+  useEffect(() => {
+    if (!hasActiveOTPSession && !isVerifying) {
+      // Auto-verification completed, navigate to next screen
+      router.push("/(auth)/password");
+    }
+  }, [hasActiveOTPSession, isVerifying, router]);
 
   const handleOtpChange = (value: string, index: number) => {
     if (value.length > 1) return;
@@ -62,16 +82,27 @@ export default function OTPScreen() {
   };
 
   const handleVerify = async () => {
+    if (isVerifying) return; // Prevent multiple simultaneous verifications
+
     const otpString = otp.join("");
     if (otpString.length !== 6) {
       showErrorToast(strings.enterValidOtp);
       return;
     }
 
-    const { verified, phoneNumber: verifiedPhone } = await verifyOTP(otpString);
-    if (verified) {
-      // setUser(userData);
-      router.push("/(auth)/password");
+    setIsVerifying(true);
+
+    try {
+      const { verified, phoneNumber: verifiedPhone } =
+        await verifyOTP(otpString);
+      if (verified) {
+        // setUser(userData);
+        router.push("/(auth)/password");
+      }
+    } catch (error) {
+      console.error("Verification error:", error);
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -82,8 +113,20 @@ export default function OTPScreen() {
     if (success) {
       setResendTimer(60);
       setOtp(["", "", "", "", "", ""]);
+      setFullOtp("");
+      setIsVerifying(false);
       inputRefs.current[0]?.focus();
     }
+  };
+
+  const handlePaste = (pastedText: string) => {
+    const cleanedText = pastedText.replace(/\D/g, ""); // Remove non-digits
+    if (cleanedText.length === 6) {
+      const otpArray = cleanedText.split("");
+      setOtp(otpArray);
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -102,6 +145,23 @@ export default function OTPScreen() {
         <ThemedText type="defaultSemiBold" className="mb-4 text-center">
           {strings.otpInputLabel}
         </ThemedText>
+        <TextInput
+          ref={hiddenInputRef}
+          value={fullOtp}
+          onChangeText={setFullOtp}
+          style={{
+            position: "absolute",
+            top: -100,
+            left: -100,
+            width: 1,
+            height: 1,
+            opacity: 0,
+          }}
+          keyboardType="numeric"
+          textContentType="oneTimeCode" // iOS auto-fill
+          autoComplete="sms-otp" // Android auto-fill
+          maxLength={6}
+        />
 
         <ThemedView className="flex-row justify-center space-x-3 gap-3">
           {otp.map((digit, index) => (
@@ -112,7 +172,14 @@ export default function OTPScreen() {
               }}
               className="w-12 border border-border rounded-lg text-center text-lg font-semibold text-foreground bg-input"
               value={digit}
-              onChangeText={(value) => handleOtpChange(value, index)}
+              onChangeText={(value) => {
+                if (value.length > 1) {
+                  if (handlePaste(value)) {
+                    return;
+                  }
+                }
+                handleOtpChange(value, index);
+              }}
               onKeyPress={({ nativeEvent }) =>
                 handleKeyPress(nativeEvent.key, index)
               }

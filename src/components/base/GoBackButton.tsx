@@ -8,11 +8,29 @@ import { ThemedText } from "./ThemedText";
 interface GoBackButtonProps {
   className?: string;
   color?: string;
+  steps?: number;
 }
-const GoBackButton = ({ className, color = "primary" }: GoBackButtonProps) => {
+const GoBackButton = ({
+  className,
+  color = "primary",
+  steps = 1,
+}: GoBackButtonProps) => {
   const router = useRouter();
   const handleGoBack = async () => {
-    router.back();
+    try {
+      let canGoBack = router.canGoBack?.() ?? true;
+
+      if (canGoBack) {
+        for (let i = 0; i < steps; i++) {
+          router.back();
+        }
+      } else {
+        router.replace("/");
+      }
+    } catch (error) {
+      console.error("GoBack error:", error);
+      router.replace("/");
+    }
   };
   return (
     <TouchableOpacity
