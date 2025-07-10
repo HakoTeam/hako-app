@@ -5,19 +5,20 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
+import { setStorageItem } from "@/services/storage";
 import { useAuthSession } from "@/stores/auth";
-import { showErrorToast } from "@/utils/toast";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import { getPasswordStrength, getStrengthText } from "@/utils/validate";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
 export default function PasswordScreen() {
   const router = useRouter();
-  const { phoneNumber, user } = useAuthSession();
+  const { phoneNumber, user, login, register, isLoading } = useAuthSession();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const isNewUser = !user;
 
   const handleSubmit = async () => {
@@ -31,27 +32,26 @@ export default function PasswordScreen() {
         showErrorToast(strings.alertPasswordTooShort);
         return;
       }
-
       if (password !== confirmPassword) {
         showErrorToast(strings.alertPasswordMismatch);
         return;
       }
     }
 
-    setLoading(true);
     try {
-      // Authenticate with backend
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (isNewUser) {
+        await register(phoneNumber, password);
+        showSuccessToast(strings.registerSuccess);
+        setStorageItem("user_phone", phoneNumber);
+      } else {
+        await login(phoneNumber, password);
+        showSuccessToast(strings.loginSuccess);
+        setStorageItem("user_phone", phoneNumber);
+      }
 
       router.replace("/");
-    } catch (error) {
-      showErrorToast(
-        isNewUser
-          ? strings.alertCreateAccountFailed
-          : strings.alertInvalidPassword
-      );
-    } finally {
-      setLoading(false);
+    } catch (error: any) {
+      showErrorToast(error.message);
     }
   };
 
@@ -61,6 +61,7 @@ export default function PasswordScreen() {
   return (
     <ThemedView color="background" className="flex-1 px-6 justify-center">
       <GoBackButton steps={2} />
+
       <ThemedView className="mb-8">
         <ThemedText type="title" className="text-center mb-4">
           {isNewUser
@@ -85,7 +86,6 @@ export default function PasswordScreen() {
             setShowPassword={setShowPassword}
             showPassword={showPassword}
           />
-
           {isNewUser && password.length > 0 && (
             <ThemedView className="mt-2">
               <ThemedText className="text-sm" color={strengthDisplay.color}>
@@ -125,17 +125,18 @@ export default function PasswordScreen() {
                 autoComplete="new-password"
               />
             </ThemedView>
+
             <ThemedView className="mt-4 gap-2">
-              <ThemedText className="text-muted-foreground">
+              <ThemedText color="muted-foreground">
                 {strings.passwordRequirements}:
               </ThemedText>
-              <ThemedText className="text-muted-foreground">
+              <ThemedText color="muted-foreground">
                 • {strings.minimumLength}
               </ThemedText>
-              <ThemedText className="text-muted-foreground">
+              <ThemedText color="muted-foreground">
                 • {strings.includeUppercase}
               </ThemedText>
-              <ThemedText className="text-muted-foreground">
+              <ThemedText color="muted-foreground">
                 • {strings.includeNumbers}
               </ThemedText>
             </ThemedView>
@@ -150,7 +151,7 @@ export default function PasswordScreen() {
             : strings.passwordButtonSubmitExistingUser
         }
         onPress={handleSubmit}
-        loading={loading}
+        loading={isLoading}
         size="lg"
       />
     </ThemedView>

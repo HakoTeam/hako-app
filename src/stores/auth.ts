@@ -1,3 +1,4 @@
+import { useLogin, useLogout, useRegister } from "@/hooks/api/useAuth";
 import { IUser } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
@@ -6,15 +7,15 @@ import { createJSONStorage, persist } from "zustand/middleware";
 interface AuthState {
   phoneNumber: string;
   user: IUser | null;
+  token: string | null;
   isLoading: boolean;
   error: string | null;
 
   setPhoneNumber: (phoneNumber: string) => void;
   setUser: (user: IUser | null) => void;
-  login: (phoneNumber: string, password?: string) => Promise<void>;
-  register: (phoneNumber: string, password?: string) => Promise<void>;
-  logout: () => Promise<void>;
+  setToken: (token: string | null) => void;
   clearError: () => void;
+  reset: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -22,6 +23,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       phoneNumber: "",
       user: null,
+      token: null,
       isLoading: false,
       error: null,
 
@@ -30,45 +32,22 @@ export const useAuthStore = create<AuthState>()(
       },
 
       setUser(user: IUser | null) {
-        set({ user: user });
+        set({ user });
       },
 
-      login: async (phoneNumber: string, password?: string) => {
-        try {
-          set({ isLoading: true, error: null });
-        } catch (error: any) {
-          set({ error: error.message, isLoading: false });
-        }
-      },
-
-      register: async (phoneNumber: string, password?: string) => {
-        try {
-          set({ isLoading: true, error: null });
-
-          // fake API response
-          const response = {
-            user: { phoneNumber, id: Date.now().toString() },
-          };
-
-          set({
-            user: response.user,
-            phoneNumber: phoneNumber,
-            isLoading: false,
-          });
-        } catch (error: any) {
-          set({ error: error.message, isLoading: false });
-        }
-      },
-
-      logout: async () => {
-        try {
-          set({ user: null, phoneNumber: "" });
-        } catch (error: any) {
-          set({ error: error.message });
-        }
+      setToken(token: string | null) {
+        set({ token });
       },
 
       clearError: () => set({ error: null }),
+
+      reset: () =>
+        set({
+          phoneNumber: "",
+          user: null,
+          token: null,
+          error: null,
+        }),
     }),
     {
       name: "auth-store",
@@ -76,6 +55,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         phoneNumber: state.phoneNumber,
         user: state.user,
+        token: state.token,
       }),
     }
   )
@@ -83,16 +63,67 @@ export const useAuthStore = create<AuthState>()(
 
 export const useAuthSession = () => {
   const store = useAuthStore();
+  const loginMutation = useLogin();
+  const registerMutation = useRegister();
+  const logoutMutation = useLogout();
+
+  const login = async (phoneNumber: string, password: string) => {
+    try {
+      store.clearError();
+      const result = await loginMutation.mutateAsync({
+        phone: phoneNumber,
+        password,
+      });
+      store.setUser(result.user);
+      store.setToken(result.token);
+      store.setPhoneNumber(phoneNumber);
+      return result;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Đăng nhập thất bại");
+    }
+  };
+
+  const register = async (phoneNumber: string, password: string) => {
+    try {
+      store.clearError();
+      const result = await registerMutation.mutateAsync({
+        phone: phoneNumber,
+        password,
+      });
+      store.setUser(result.user);
+      store.setToken(result.token);
+      store.setPhoneNumber(phoneNumber);
+      return result;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Đăng ký thất bại");
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await logoutMutation.mutateAsync();
+      store.reset();
+    } catch (error: any) {
+      // Even if logout fails on server, clear local data
+      store.reset();
+    }
+  };
+
   return {
     phoneNumber: store.phoneNumber,
     user: store.user,
-    isAuthenticated: !!store.user,
-    isLoading: store.isLoading,
+    token: store.token,
+    isAuthenticated: !!store.user && !!store.token,
+    isLoading:
+      loginMutation.isPending ||
+      registerMutation.isPending ||
+      logoutMutation.isPending,
     error: store.error,
     setUser: store.setUser,
     setPhoneNumber: store.setPhoneNumber,
-    logout: store.logout,
-    register: store.register,
+    logout,
+    login,
+    register,
     clearError: store.clearError,
   };
 };

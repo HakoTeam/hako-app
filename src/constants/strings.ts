@@ -82,6 +82,7 @@ export const strings = {
   errorWeakPassword: "Mật khẩu quá yếu",
   genericError: "Đã xảy ra lỗi, vui lòng thử lại.",
   tooManyRequests: "Bạn đã yêu cầu quá nhiều lần, vui lòng thử lại sau.",
+  featureComingSoon: "Tính năng sắp ra mắt",
 
   // Alerts
   alertMissingPassword: "Vui lòng nhập mật khẩu",
@@ -89,6 +90,7 @@ export const strings = {
   alertPasswordMismatch: "Mật khẩu không khớp",
   alertCreateAccountFailed: "Tạo tài khoản thất bại",
   alertInvalidPassword: "Mật khẩu không đúng",
+  alertMissingPhone: "Vui lòng nhập số điện thoại",
 
   // Toast
   toastSuccessTitle: "Thành công",
@@ -99,4 +101,13 @@ export const strings = {
   toastInfoDescription: "Đây là thông báo thông tin.",
   toastWarnTitle: "Cảnh báo",
   toastWarnDescription: "Đây là thông báo cảnh báo.",
+
+  // Login Screen
+  loginTitle: "Đăng nhập",
+  loginSubtitle: "Nhập thông tin để đăng nhập vào tài khoản",
+  loginButton: "Đăng nhập",
+  loginWithGoogle: "Đăng nhập với Google",
+  noAccount: "Chưa có tài khoản?",
+  registerNow: "Đăng ký ngay",
+  forgotPassword: "Quên mật khẩu?",
 };

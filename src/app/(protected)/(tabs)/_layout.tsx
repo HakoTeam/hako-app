@@ -51,16 +51,16 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(home)/index"
         options={createTabOptions("Trang chủ", "house", "house.fill")}
       />
       <Tabs.Screen
         name="profile"
-        options={createTabOptions("Hồ sơ", "paperplane", "paperplane.fill")}
+        options={createTabOptions("Hồ sơ", "person", "person.fill")}
       />
       <Tabs.Screen
         name="setting"
-        options={createTabOptions("Cài đặt", "paperplane", "paperplane.fill")}
+        options={createTabOptions("Cài đặt", "gearshape", "gearshape.fill")}
       />
     </Tabs>
   );

@@ -2,6 +2,7 @@ export interface IUser {
   id: string;
   phoneNumber: string;
   email?: string;
+  avatar?: string;
 }
 
 export interface ICreateUserData {
