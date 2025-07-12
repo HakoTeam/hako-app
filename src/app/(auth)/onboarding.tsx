@@ -2,6 +2,7 @@ import { ThemedButton } from "@/components/base/ThemedButton";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import { onboardingData } from "@/constants/onboarding";
+import { storageKeys } from "@/constants/storage";
 import { strings } from "@/constants/strings";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
@@ -24,7 +25,7 @@ export default function OnboardingScreen() {
   };
 
   const handleGetStarted = async () => {
-    await AsyncStorage.setItem("onboarding_seen", "true");
+    await AsyncStorage.setItem(storageKeys.onboardingScreen, "true");
     router.replace("/(auth)/phone-input");
   };
 

@@ -1,3 +1,4 @@
+import { storageKeys } from "@/constants/storage";
 import { getStorageItem } from "@/services/storage";
 import { useFonts } from "expo-font";
 import { Redirect, SplashScreen, Stack } from "expo-router";
@@ -25,9 +26,11 @@ export default function ProtectedLayout() {
   useEffect(() => {
     async function checkAuthState() {
       try {
-        const onboardingComplete = await getStorageItem("onboarding_seen");
-        const userPhone = await getStorageItem("user_phone");
-        const authToken = await getStorageItem("auth_token");
+        const onboardingComplete = await getStorageItem(
+          storageKeys.onboardingScreen
+        );
+        const userPhone = await getStorageItem(storageKeys.userPhone);
+        const authToken = await getStorageItem(storageKeys.authToken);
 
         setHasOnboarded(onboardingComplete === "true");
         setIsAuthenticated(!!authToken);
@@ -51,7 +54,7 @@ export default function ProtectedLayout() {
   }
 
   if (!hasOnboarded) return <Redirect href="/(auth)/onboarding" />;
-  // if (!hasUserPhone) return <Redirect href="/(auth)/phone-input" />;
+  if (!hasUserPhone) return <Redirect href="/(auth)/phone-input" />;
   if (!isAuthenticated) return <Redirect href="/(auth)/login" />;
 
   return (

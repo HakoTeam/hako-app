@@ -39,7 +39,7 @@ export default function PhoneInputScreen() {
 
     const success = await sendOTP(phone);
     if (success) {
-      setPhoneNumber(phoneNumber);
+      setPhoneNumber(phone);
       router.push("/(auth)/otp-verify");
     }
   };

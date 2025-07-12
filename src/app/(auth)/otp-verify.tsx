@@ -2,8 +2,10 @@ import GoBackButton from "@/components/base/GoBackButton";
 import { ThemedButton } from "@/components/base/ThemedButton";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
+import { storageKeys } from "@/constants/storage";
 import { strings } from "@/constants/strings";
 import { usePhoneAuth } from "@/contexts/PhoneAuthContext";
+import { getStorageItem } from "@/services/storage";
 import { useAuthSession } from "@/stores/auth";
 import { showErrorToast } from "@/utils/toast";
 import { useRouter } from "expo-router";
@@ -12,7 +14,7 @@ import { TextInput } from "react-native";
 
 export default function OTPScreen() {
   const router = useRouter();
-  const { phoneNumber, setUser } = useAuthSession();
+  const { phoneNumber } = useAuthSession();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [fullOtp, setFullOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(60);
@@ -24,7 +26,6 @@ export default function OTPScreen() {
     resendOTP,
     isLoading: loading,
     clearError,
-    hasActiveOTPSession,
   } = usePhoneAuth();
 
   useEffect(() => {
@@ -39,13 +40,15 @@ export default function OTPScreen() {
     clearError();
   }, []);
 
-  useEffect(() => {
-    const otpString = otp.join("");
-    if (otpString.length === 6 && !isVerifying) {
-      handleVerify();
-    }
-  }, [otp, isVerifying]);
+  // Auto-verify when OTP is complete
+  // useEffect(() => {
+  //   const otpString = otp.join("");
+  //   if (otpString.length === 6 && !isVerifying) {
+  //     handleVerify();
+  //   }
+  // }, [otp, isVerifying]);
 
+  // Handle pasted OTP
   useEffect(() => {
     if (fullOtp.length === 6) {
       const otpArray = fullOtp.split("");
@@ -54,13 +57,21 @@ export default function OTPScreen() {
     }
   }, [fullOtp]);
 
-  // Handle navigation when OTP session becomes inactive (auto-verification completed)
+  // Redirect if no active OTP session
   useEffect(() => {
-    if (!hasActiveOTPSession && !isVerifying) {
-      // Auto-verification completed, navigate to next screen
-      router.push("/(auth)/password");
+    async function checkOTPSession() {
+      const activeOTPSession = await getStorageItem(
+        storageKeys.activeOTPSession
+      );
+      console.log(activeOTPSession);
+
+      const checkSession = activeOTPSession === "true";
+      if (!checkSession) {
+        router.push("/(auth)/phone-input");
+      }
     }
-  }, [hasActiveOTPSession, isVerifying, router]);
+    checkOTPSession();
+  }, [router]);
 
   const handleOtpChange = (value: string, index: number) => {
     if (value.length > 1) return;
@@ -93,14 +104,20 @@ export default function OTPScreen() {
     setIsVerifying(true);
 
     try {
+      console.log("Verifying OTP:", otpString);
+
       const { verified, phoneNumber: verifiedPhone } =
         await verifyOTP(otpString);
+
       if (verified) {
-        // setUser(userData);
+        console.log(
+          "OTP verification successful, navigating to password screen"
+        );
         router.push("/(auth)/password");
       }
     } catch (error) {
       console.error("Verification error:", error);
+      showErrorToast(strings.genericError);
     } finally {
       setIsVerifying(false);
     }
@@ -195,7 +212,7 @@ export default function OTPScreen() {
         <ThemedButton
           title={strings.otpContinue}
           onPress={handleVerify}
-          loading={loading}
+          loading={loading || isVerifying}
           size="lg"
         />
 

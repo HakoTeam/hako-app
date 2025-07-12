@@ -1,3 +1,4 @@
+import { storageKeys } from "@/constants/storage";
 import axios from "axios";
 import { getStorageItem, removeStorageItem } from "./storage";
 
@@ -16,7 +17,7 @@ export const api = axios.create({
 // Request interceptor for auth tokens
 api.interceptors.request.use(
   async (config) => {
-    const token = await getStorageItem("auth_token");
+    const token = await getStorageItem(storageKeys.authToken);
     if (token) {
       const { state } = JSON.parse(token);
       if (state?.token) {

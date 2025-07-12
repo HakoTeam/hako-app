@@ -1,9 +1,9 @@
-import { PhoneAuthProvider } from "@/contexts/PhoneAuthContext";
+import { PhoneAuthenticationProvider } from "@/contexts/PhoneAuthContext";
 import { Stack } from "expo-router";
 
 export default function AuthLayout() {
   return (
-    <PhoneAuthProvider>
+    <PhoneAuthenticationProvider>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -14,6 +14,6 @@ export default function AuthLayout() {
         <Stack.Screen name="otp-verify" options={{ headerShown: false }} />
         <Stack.Screen name="password" options={{ headerShown: false }} />
       </Stack>
-    </PhoneAuthProvider>
+    </PhoneAuthenticationProvider>
   );
 }

@@ -1,23 +1,28 @@
+import { storageKeys } from "@/constants/storage";
 import { strings } from "@/constants/strings";
+import {
+  getStorageItem,
+  removeStorageItem,
+  setStorageItem,
+} from "@/services/storage";
 import { formatPhoneNumber } from "@/utils/phone";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
-import { FirebaseAuthTypes, getAuth } from "@react-native-firebase/auth";
+import {
+  deleteUser,
+  getAuth,
+  PhoneAuthProvider,
+  signInWithCredential,
+  signOut,
+  verifyPhoneNumber,
+} from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, ReactNode, useContext, useState } from "react";
 
 interface PhoneAuthContextType {
   // State
   isLoading: boolean;
   error: string | null;
   phoneNumber: string;
-  hasActiveOTPSession: boolean;
 
   // Methods
   sendOTP: (phoneNumber: string) => Promise<boolean>;
@@ -33,104 +38,17 @@ const PhoneAuthContext = createContext<PhoneAuthContextType | undefined>(
   undefined
 );
 
-interface PhoneAuthProviderProps {
+interface PhoneAuthenticationProps {
   children: ReactNode;
 }
 
-export const PhoneAuthProvider: React.FC<PhoneAuthProviderProps> = ({
-  children,
-}) => {
+export const PhoneAuthenticationProvider: React.FC<
+  PhoneAuthenticationProps
+> = ({ children }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [hasActiveOTPSession, setHasActiveOTPSession] = useState(false);
-
-  const otpConfirmationRef =
-    useRef<FirebaseAuthTypes.ConfirmationResult | null>(null);
-  const authListenerRef = useRef<(() => void) | null>(null);
-  const isAutoVerifyingRef = useRef(false);
-  const expectedPhoneNumberRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const auth = getAuth();
-
-    // Clean up previous listener
-    if (authListenerRef.current) {
-      authListenerRef.current();
-      authListenerRef.current = null;
-    }
-
-    // Set up auth state listener when we have an active OTP session
-    if (hasActiveOTPSession) {
-      const unsubscribe = auth.onAuthStateChanged(async (user) => {
-        if (user && user.phoneNumber) {
-          console.log("User auto-verified by Android:", user.phoneNumber);
-
-          // Check if the auto-verified phone number matches what we expect
-          if (
-            expectedPhoneNumberRef.current &&
-            user.phoneNumber !== expectedPhoneNumberRef.current
-          ) {
-            console.warn("Auto-verified phone number doesn't match expected:", {
-              expected: expectedPhoneNumberRef.current,
-              actual: user.phoneNumber,
-            });
-
-            // Delete the user and show error
-            try {
-              await user.delete();
-            } catch (deleteError) {
-              console.warn("Error deleting temp user:", deleteError);
-            }
-
-            showErrorToast(
-              "Phone number verification mismatch. Please try again."
-            );
-            clearOTPSession();
-            return;
-          }
-
-          // Set flag to prevent race condition
-          isAutoVerifyingRef.current = true;
-
-          // Delete the temporary Firebase user (if you don't want to keep it)
-          try {
-            await user.delete();
-          } catch (deleteError) {
-            console.warn("Error deleting temp user:", deleteError);
-          }
-
-          // Clear OTP session
-          otpConfirmationRef.current = null;
-          setHasActiveOTPSession(false);
-          setIsLoading(false);
-
-          showSuccessToast(strings.otpVerified);
-
-          // You can navigate here or return the verification result
-          // For example: router.push('/dashboard');
-
-          console.log("Auto-verification completed for:", user.phoneNumber);
-
-          // Reset the flag after a short delay
-          setTimeout(() => {
-            isAutoVerifyingRef.current = false;
-          }, 1000);
-        }
-      });
-
-      authListenerRef.current = unsubscribe;
-    }
-
-    // Cleanup function
-    return () => {
-      if (authListenerRef.current) {
-        authListenerRef.current();
-        authListenerRef.current = null;
-      }
-    };
-  }, [hasActiveOTPSession, router]);
 
   const handleAuthError = (error: any) => {
     let errorMessage = "";
@@ -147,17 +65,14 @@ export const PhoneAuthProvider: React.FC<PhoneAuthProviderProps> = ({
         break;
       case "auth/code-expired":
         errorMessage = strings.otpExpired;
-        // Clear OTP session when code expires
-        otpConfirmationRef.current = null;
-        setHasActiveOTPSession(false);
+        removeStorageItem(storageKeys.activeOTPSession);
         break;
       case "auth/missing-verification-code":
         errorMessage = strings.enterValidOtp;
         break;
       case "auth/session-expired":
         errorMessage = strings.otpExpired;
-        otpConfirmationRef.current = null;
-        setHasActiveOTPSession(false);
+        removeStorageItem(storageKeys.activeOTPSession);
         break;
       default:
         errorMessage = error.message || strings.genericError;
@@ -172,42 +87,53 @@ export const PhoneAuthProvider: React.FC<PhoneAuthProviderProps> = ({
     setError(null);
 
     try {
-      // Format phone number
       const formattedPhone = formatPhoneNumber(phoneNumber);
       const auth = getAuth();
+
+      // Sign out any existing user
       if (auth.currentUser) {
-        await auth.signOut();
+        await signOut(auth);
       }
 
-      // Clear previous OTP session
-      otpConfirmationRef.current = null;
-      if (authListenerRef.current) {
-        authListenerRef.current();
-        authListenerRef.current = null;
+      // Clear previous session
+      removeStorageItem(storageKeys.verificationId);
+      removeStorageItem(storageKeys.activeOTPSession);
+
+      console.log("Sending OTP to:", formattedPhone, Date.now());
+
+      // Send OTP using PhoneAuthProvider
+      const confirmationResult = await verifyPhoneNumber(
+        auth,
+        formattedPhone,
+        60
+      );
+      console.log("verify phone number completed:", Date.now());
+
+      if (!confirmationResult) {
+        showErrorToast(strings.alertAuthInvalidPhoneNumber);
+        setIsLoading(false);
+        return false;
       }
-      setHasActiveOTPSession(false);
-      isAutoVerifyingRef.current = false;
 
-      // Set the expected phone number for validation
-      expectedPhoneNumberRef.current = formattedPhone;
+      // Extract verification ID from confirmation result
+      const verificationId = confirmationResult.verificationId;
 
-      const confirmationResult =
-        await auth.signInWithPhoneNumber(formattedPhone);
+      if (!verificationId) {
+        throw new Error("Failed to get verification ID");
+      }
 
-      // Store confirmation result
-      otpConfirmationRef.current = confirmationResult;
+      setStorageItem(storageKeys.verificationId, verificationId);
       setPhoneNumber(formattedPhone);
-      setHasActiveOTPSession(true);
+      setStorageItem(storageKeys.activeOTPSession, "true");
       setIsLoading(false);
 
       showSuccessToast(strings.otpSent);
-      console.log("OTP sent successfully to:", formattedPhone);
+      console.log("OTP sent successfully to:", formattedPhone, verificationId);
       return true;
     } catch (error: any) {
       console.error("Error sending OTP:", error);
       handleAuthError(error);
       setIsLoading(false);
-      expectedPhoneNumberRef.current = null;
       return false;
     }
   };
@@ -215,25 +141,11 @@ export const PhoneAuthProvider: React.FC<PhoneAuthProviderProps> = ({
   const verifyOTP = async (
     otp: string
   ): Promise<{ verified: boolean; phoneNumber?: string }> => {
-    // Check if auto-verification is in progress
-    if (isAutoVerifyingRef.current) {
-      console.log(
-        "Auto-verification in progress, skipping manual verification"
-      );
-      return { verified: true, phoneNumber };
-    }
+    const verificationId = await getStorageItem(storageKeys.verificationId);
+    console.log("Retrieved verification ID:", verificationId);
 
-    const otpConfirmation = otpConfirmationRef.current;
-
-    console.log("Current OTP state:", {
-      hasConfirmation: !!otpConfirmation,
-      phoneNumber,
-      hasActiveSession: hasActiveOTPSession,
-      isAutoVerifying: isAutoVerifyingRef.current,
-    });
-
-    if (!otpConfirmation) {
-      console.error("No OTP confirmation available");
+    if (!verificationId) {
+      console.error("No verification ID available");
       showErrorToast(strings.noOtpSession);
       return { verified: false };
     }
@@ -242,98 +154,45 @@ export const PhoneAuthProvider: React.FC<PhoneAuthProviderProps> = ({
     setError(null);
 
     try {
-      const result = await otpConfirmation.confirm(otp);
-      const user = result?.user;
+      console.log("Verifying OTP:", otp);
 
-      if (user) {
-        console.log("OTP verified successfully for:", user.phoneNumber);
+      // Create phone credential using verification ID and OTP
+      const phoneCredential = PhoneAuthProvider.credential(verificationId, otp);
 
-        // Verify the phone number matches what we expect
-        if (
-          expectedPhoneNumberRef.current &&
-          user.phoneNumber !== expectedPhoneNumberRef.current
-        ) {
-          console.warn("Verified phone number doesn't match expected:", {
-            expected: expectedPhoneNumberRef.current,
-            actual: user.phoneNumber,
-          });
+      // Sign in with the credential to verify it
+      const auth = getAuth();
+      const result = await signInWithCredential(auth, phoneCredential);
 
-          await user.delete();
-          clearOTPSession();
-          showErrorToast(
-            "Phone number verification mismatch. Please try again."
-          );
-          return { verified: false };
-        }
+      if (result && result.user) {
+        console.log(
+          "OTP verified successfully for:",
+          result.user.uid,
+          result.user.phoneNumber
+        );
 
-        await user.delete();
+        // Store the verified phone number
+        const verifiedPhoneNumber = result.user.phoneNumber || phoneNumber;
 
-        // Clear OTP session after successful verification
-        otpConfirmationRef.current = null;
-        setHasActiveOTPSession(false);
+        // Immediately delete the user since we only want to verify the phone number
+        await deleteUser(result.user);
+
+        // Clear OTP session
+        removeStorageItem(storageKeys.verificationId);
+        removeStorageItem(storageKeys.activeOTPSession);
         setIsLoading(false);
-        expectedPhoneNumberRef.current = null;
 
         showSuccessToast(strings.otpVerified);
-        return { verified: true, phoneNumber };
+
+        return {
+          verified: true,
+          phoneNumber: verifiedPhoneNumber,
+        };
       }
 
       setIsLoading(false);
       return { verified: false };
     } catch (error: any) {
       console.error("Error verifying OTP:", error);
-
-      // Special handling for session-expired - it might mean auto-verification happened
-      if (error.code === "auth/session-expired") {
-        // Check if user is currently authenticated
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-
-        if (currentUser && currentUser.phoneNumber) {
-          console.log(
-            "Session expired but user is authenticated - auto-verification likely occurred"
-          );
-
-          // Verify the phone number matches what we expect
-          if (
-            expectedPhoneNumberRef.current &&
-            currentUser.phoneNumber !== expectedPhoneNumberRef.current
-          ) {
-            console.warn("Auto-verified phone number doesn't match expected:", {
-              expected: expectedPhoneNumberRef.current,
-              actual: currentUser.phoneNumber,
-            });
-
-            try {
-              await currentUser.delete();
-            } catch (deleteError) {
-              console.warn("Error deleting temp user:", deleteError);
-            }
-
-            clearOTPSession();
-            showErrorToast(
-              "Phone number verification mismatch. Please try again."
-            );
-            return { verified: false };
-          }
-
-          try {
-            await currentUser.delete();
-          } catch (deleteError) {
-            console.warn("Error deleting temp user:", deleteError);
-          }
-
-          // Clear OTP session
-          otpConfirmationRef.current = null;
-          setHasActiveOTPSession(false);
-          setIsLoading(false);
-          expectedPhoneNumberRef.current = null;
-
-          showSuccessToast(strings.otpVerified);
-          return { verified: true, phoneNumber: currentUser.phoneNumber };
-        }
-      }
-
       handleAuthError(error);
       setIsLoading(false);
       return { verified: false };
@@ -351,18 +210,10 @@ export const PhoneAuthProvider: React.FC<PhoneAuthProviderProps> = ({
   };
 
   const clearOTPSession = () => {
-    // Clean up auth listener
-    if (authListenerRef.current) {
-      authListenerRef.current();
-      authListenerRef.current = null;
-    }
-
-    otpConfirmationRef.current = null;
+    removeStorageItem(storageKeys.verificationId);
+    removeStorageItem(storageKeys.activeOTPSession);
     setPhoneNumber("");
-    setHasActiveOTPSession(false);
     setError(null);
-    isAutoVerifyingRef.current = false;
-    expectedPhoneNumberRef.current = null;
   };
 
   const clearError = () => {
@@ -373,7 +224,6 @@ export const PhoneAuthProvider: React.FC<PhoneAuthProviderProps> = ({
     isLoading,
     error,
     phoneNumber,
-    hasActiveOTPSession,
     sendOTP,
     verifyOTP,
     resendOTP,

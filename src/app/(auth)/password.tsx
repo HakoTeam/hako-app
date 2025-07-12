@@ -4,6 +4,7 @@ import ThemedPasswordInput from "@/components/base/ThemedPasswordInput";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { ThemedView } from "@/components/base/ThemedView";
+import { storageKeys } from "@/constants/storage";
 import { strings } from "@/constants/strings";
 import { setStorageItem } from "@/services/storage";
 import { useAuthSession } from "@/stores/auth";
@@ -20,6 +21,7 @@ export default function PasswordScreen() {
   const [showPassword, setShowPassword] = useState(false);
 
   const isNewUser = !user;
+  console.log(user);
 
   const handleSubmit = async () => {
     if (!password.trim()) {
@@ -42,11 +44,11 @@ export default function PasswordScreen() {
       if (isNewUser) {
         await register(phoneNumber, password);
         showSuccessToast(strings.registerSuccess);
-        setStorageItem("user_phone", phoneNumber);
+        setStorageItem(storageKeys.userPhone, phoneNumber);
       } else {
         await login(phoneNumber, password);
         showSuccessToast(strings.loginSuccess);
-        setStorageItem("user_phone", phoneNumber);
+        setStorageItem(storageKeys.userPhone, phoneNumber);
       }
 
       router.replace("/");
