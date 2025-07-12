@@ -1,3 +1,4 @@
+import { strings } from "@/constants/strings";
 import { useLogin, useLogout, useRegister } from "@/hooks/api/useAuth";
 import { IUser } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -95,7 +96,7 @@ export const useAuthSession = () => {
       store.setPhoneNumber(phoneNumber);
       return result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || "Đăng ký thất bại");
+      throw new Error(error.response?.data?.message || strings.registerFailed);
     }
   };
 

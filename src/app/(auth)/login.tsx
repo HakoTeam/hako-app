@@ -5,7 +5,7 @@ import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { ThemedView } from "@/components/base/ThemedView";
 import { strings } from "@/constants/strings";
 import { useAuthSession } from "@/stores/auth";
-import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { showErrorToast, showInfoToast, showSuccessToast } from "@/utils/toast";
 import { validatePhoneNumber } from "@/utils/validate";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -49,7 +49,7 @@ export default function LoginScreen() {
 
   const handleGoogleLogin = async () => {
     // TODO: Implement Google login
-    showErrorToast(strings.featureComingSoon);
+    showInfoToast(strings.featureComingSoon);
   };
 
   const handleForgotPassword = () => {

@@ -12,15 +12,9 @@ import { useEffect, useState } from "react";
 
 export default function PhoneInputScreen() {
   const router = useRouter();
-  const { phoneNumber, setPhoneNumber } = useAuthSession();
+  const { setPhoneNumber } = useAuthSession();
   const [phone, setPhone] = useState("");
   const { sendOTP, isLoading: loading, clearError } = usePhoneAuth();
-
-  useEffect(() => {
-    if (phoneNumber && !phone) {
-      setPhone(phoneNumber);
-    }
-  }, [phoneNumber]);
 
   useEffect(() => {
     clearError();
