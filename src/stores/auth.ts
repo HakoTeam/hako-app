@@ -80,7 +80,7 @@ export const useAuthSession = () => {
       store.setPhoneNumber(phoneNumber);
       return result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || "Đăng nhập thất bại");
+      throw new Error(error.response?.data?.message || strings.loginFailed);
     }
   };
 

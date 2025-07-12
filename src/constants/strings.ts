@@ -110,6 +110,7 @@ export const strings = {
   noAccount: "Chưa có tài khoản?",
   registerNow: "Đăng ký ngay",
   forgotPassword: "Quên mật khẩu?",
+  loginFailed: "Đăng nhập thất bại",
 
   // Register
   registerFailed: "Đăng ký thất bại",
