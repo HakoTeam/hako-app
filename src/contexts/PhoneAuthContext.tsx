@@ -15,7 +15,6 @@ import {
   signOut,
   verifyPhoneNumber,
 } from "@react-native-firebase/auth";
-import { useRouter } from "expo-router";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
 interface PhoneAuthContextType {
@@ -45,7 +44,6 @@ interface PhoneAuthenticationProps {
 export const PhoneAuthenticationProvider: React.FC<
   PhoneAuthenticationProps
 > = ({ children }) => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");

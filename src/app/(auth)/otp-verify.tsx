@@ -40,14 +40,6 @@ export default function OTPScreen() {
     clearError();
   }, []);
 
-  // Auto-verify when OTP is complete
-  // useEffect(() => {
-  //   const otpString = otp.join("");
-  //   if (otpString.length === 6 && !isVerifying) {
-  //     handleVerify();
-  //   }
-  // }, [otp, isVerifying]);
-
   // Handle pasted OTP
   useEffect(() => {
     if (fullOtp.length === 6) {
@@ -106,8 +98,7 @@ export default function OTPScreen() {
     try {
       console.log("Verifying OTP:", otpString);
 
-      const { verified, phoneNumber: verifiedPhone } =
-        await verifyOTP(otpString);
+      const { verified } = await verifyOTP(otpString);
 
       if (verified) {
         console.log(
