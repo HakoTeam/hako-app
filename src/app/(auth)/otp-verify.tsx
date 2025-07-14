@@ -16,11 +16,9 @@ export default function OTPScreen() {
   const router = useRouter();
   const { phoneNumber } = useAuthSession();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [fullOtp, setFullOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(60);
   const [isVerifying, setIsVerifying] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
-  const hiddenInputRef = useRef<TextInput | null>(null);
   const {
     verifyOTP,
     resendOTP,
@@ -40,22 +38,12 @@ export default function OTPScreen() {
     clearError();
   }, []);
 
-  // Handle pasted OTP
-  useEffect(() => {
-    if (fullOtp.length === 6) {
-      const otpArray = fullOtp.split("");
-      setOtp(otpArray);
-      setFullOtp(""); // Clear the hidden input
-    }
-  }, [fullOtp]);
-
-  // Redirect if no active OTP session
+  // Redirect to screen input phone number if no active OTP session
   useEffect(() => {
     async function checkOTPSession() {
       const activeOTPSession = await getStorageItem(
         storageKeys.activeOTPSession
       );
-      console.log(activeOTPSession);
 
       const checkSession = activeOTPSession === "true";
       if (!checkSession) {
@@ -96,18 +84,12 @@ export default function OTPScreen() {
     setIsVerifying(true);
 
     try {
-      console.log("Verifying OTP:", otpString);
-
       const { verified } = await verifyOTP(otpString);
 
       if (verified) {
-        console.log(
-          "OTP verification successful, navigating to password screen"
-        );
         router.push("/(auth)/password");
       }
     } catch (error) {
-      console.error("Verification error:", error);
       showErrorToast(strings.genericError);
     } finally {
       setIsVerifying(false);
@@ -121,7 +103,6 @@ export default function OTPScreen() {
     if (success) {
       setResendTimer(60);
       setOtp(["", "", "", "", "", ""]);
-      setFullOtp("");
       setIsVerifying(false);
       inputRefs.current[0]?.focus();
     }
@@ -153,23 +134,6 @@ export default function OTPScreen() {
         <ThemedText type="defaultSemiBold" className="mb-4 text-center">
           {strings.otpInputLabel}
         </ThemedText>
-        <TextInput
-          ref={hiddenInputRef}
-          value={fullOtp}
-          onChangeText={setFullOtp}
-          style={{
-            position: "absolute",
-            top: -100,
-            left: -100,
-            width: 1,
-            height: 1,
-            opacity: 0,
-          }}
-          keyboardType="numeric"
-          textContentType="oneTimeCode" // iOS auto-fill
-          autoComplete="sms-otp" // Android auto-fill
-          maxLength={6}
-        />
 
         <ThemedView className="flex-row justify-center space-x-3 gap-3">
           {otp.map((digit, index) => (

@@ -21,7 +21,6 @@ export default function PasswordScreen() {
   const [showPassword, setShowPassword] = useState(false);
 
   const isNewUser = !user;
-  console.log(user);
 
   const handleSubmit = async () => {
     if (!password.trim()) {

@@ -48,6 +48,7 @@ export const PhoneAuthenticationProvider: React.FC<
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  // Handle common firebase auth error
   const handleAuthError = (error: any) => {
     let errorMessage = "";
 
@@ -85,27 +86,26 @@ export const PhoneAuthenticationProvider: React.FC<
     setError(null);
 
     try {
+      // Accepts phoneNumber in any format; so must format to include country code (e.g., +84 for Vietnam)
       const formattedPhone = formatPhoneNumber(phoneNumber);
+
       const auth = getAuth();
 
-      // Sign out any existing user
+      // Ensure a clean session by signing out any current user
       if (auth.currentUser) {
         await signOut(auth);
       }
 
-      // Clear previous session
+      // Clear any previous verification data
       removeStorageItem(storageKeys.verificationId);
       removeStorageItem(storageKeys.activeOTPSession);
 
-      console.log("Sending OTP to:", formattedPhone, Date.now());
-
-      // Send OTP using PhoneAuthProvider
+      // Send OTP using verifyPhoneNumber to avoid auto-retrieval and ensure manual code entry
       const confirmationResult = await verifyPhoneNumber(
         auth,
         formattedPhone,
         60
       );
-      console.log("verify phone number completed:", Date.now());
 
       if (!confirmationResult) {
         showErrorToast(strings.alertAuthInvalidPhoneNumber);
@@ -117,19 +117,18 @@ export const PhoneAuthenticationProvider: React.FC<
       const verificationId = confirmationResult.verificationId;
 
       if (!verificationId) {
-        throw new Error("Failed to get verification ID");
+        throw new Error(strings.errorSendOTP);
       }
 
+      // Store verification data
       setStorageItem(storageKeys.verificationId, verificationId);
       setPhoneNumber(formattedPhone);
       setStorageItem(storageKeys.activeOTPSession, "true");
-      setIsLoading(false);
 
+      setIsLoading(false);
       showSuccessToast(strings.otpSent);
-      console.log("OTP sent successfully to:", formattedPhone, verificationId);
       return true;
     } catch (error: any) {
-      console.error("Error sending OTP:", error);
       handleAuthError(error);
       setIsLoading(false);
       return false;
@@ -139,11 +138,10 @@ export const PhoneAuthenticationProvider: React.FC<
   const verifyOTP = async (
     otp: string
   ): Promise<{ verified: boolean; phoneNumber?: string }> => {
+    // Get verificationId from storage and check if exits
     const verificationId = await getStorageItem(storageKeys.verificationId);
-    console.log("Retrieved verification ID:", verificationId);
 
     if (!verificationId) {
-      console.error("No verification ID available");
       showErrorToast(strings.noOtpSession);
       return { verified: false };
     }
@@ -152,8 +150,6 @@ export const PhoneAuthenticationProvider: React.FC<
     setError(null);
 
     try {
-      console.log("Verifying OTP:", otp);
-
       // Create phone credential using verification ID and OTP
       const phoneCredential = PhoneAuthProvider.credential(verificationId, otp);
 
@@ -162,12 +158,6 @@ export const PhoneAuthenticationProvider: React.FC<
       const result = await signInWithCredential(auth, phoneCredential);
 
       if (result && result.user) {
-        console.log(
-          "OTP verified successfully for:",
-          result.user.uid,
-          result.user.phoneNumber
-        );
-
         // Store the verified phone number
         const verifiedPhoneNumber = result.user.phoneNumber || phoneNumber;
 
@@ -177,8 +167,8 @@ export const PhoneAuthenticationProvider: React.FC<
         // Clear OTP session
         removeStorageItem(storageKeys.verificationId);
         removeStorageItem(storageKeys.activeOTPSession);
-        setIsLoading(false);
 
+        setIsLoading(false);
         showSuccessToast(strings.otpVerified);
 
         return {
@@ -190,7 +180,6 @@ export const PhoneAuthenticationProvider: React.FC<
       setIsLoading(false);
       return { verified: false };
     } catch (error: any) {
-      console.error("Error verifying OTP:", error);
       handleAuthError(error);
       setIsLoading(false);
       return { verified: false };
@@ -203,7 +192,6 @@ export const PhoneAuthenticationProvider: React.FC<
       return false;
     }
 
-    console.log("Resending OTP to:", phoneNumber);
     return await sendOTP(phoneNumber);
   };
 

@@ -83,6 +83,8 @@ export const strings = {
   genericError: "Đã xảy ra lỗi, vui lòng thử lại.",
   tooManyRequests: "Bạn đã yêu cầu quá nhiều lần, vui lòng thử lại sau.",
   featureComingSoon: "Tính năng sắp ra mắt",
+  errorSendOTP:
+    "Không thể gửi mã OTP. Vui lòng kiểm tra số điện thoại hoặc thử lại sau ít phút.",
 
   // Alerts
   alertMissingPassword: "Vui lòng nhập mật khẩu",

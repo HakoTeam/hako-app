@@ -21,6 +21,7 @@ export default function PhoneInputScreen() {
   }, []);
 
   const handleContinue = async () => {
+    // Handle validate user input
     if (!phone.trim()) {
       showErrorToast(strings.alertMissingPhoneNumber);
       return;
@@ -30,8 +31,9 @@ export default function PhoneInputScreen() {
       showErrorToast(strings.alertInvalidPhoneNumber);
       return;
     }
-
+    // Handle send OTP from firebase to phone number
     const success = await sendOTP(phone);
+
     if (success) {
       setPhoneNumber(phone);
       router.push("/(auth)/otp-verify");
