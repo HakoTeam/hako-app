@@ -66,9 +66,9 @@ export const strings = {
   passwordButtonSubmitNewUser: "Tạo tài khoản",
   passwordButtonSubmitExistingUser: "Đăng nhập",
   passwordRequirements: "Yêu cầu mật khẩu",
-  minimumLength: "Ít nhất 8 ký tự",
-  includeUppercase: "Bao gồm chữ in hoa",
-  includeNumbers: "Bao gồm chữ số",
+  minimumLength: "Cần ít nhất 8 ký tự",
+  includeUppercase: "Nên bao gồm chữ thường, in hoa",
+  includeNumbers: "Nên bao gồm chữ số, kí tự đặc biệt",
 
   // Success
   loginSuccess: "Đăng nhập thành công",
