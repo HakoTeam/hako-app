@@ -1,0 +1,55 @@
+export default {
+  expo: {
+    name: "Hako",
+    slug: "hako-app",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./src/assets/images/icon.png",
+    scheme: "hakoapp",
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true,
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: "com.hako.hakoapp",
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
+      },
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: "./src/assets/images/adaptive-icon.png",
+        backgroundColor: "#ffffff",
+      },
+      edgeToEdgeEnabled: true,
+      package: "com.hako.hakoapp",
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+    },
+    web: {
+      bundler: "metro",
+      output: "static",
+      favicon: "./src/assets/images/favicon.png",
+    },
+    plugins: [
+      "expo-router",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/app",
+      [
+        "expo-splash-screen",
+        {
+          image: "./src/assets/images/splash-icon.png",
+          imageWidth: 200,
+          resizeMode: "contain",
+          backgroundColor: "#ffffff",
+        },
+      ],
+    ],
+    experiments: {
+      typedRoutes: true,
+    },
+    extra: {
+      eas: {
+        projectId: "ddd6ed8d-ea52-4075-93c7-60ac7dfe92a1",
+      },
+    },
+  },
+};

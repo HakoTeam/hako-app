@@ -2,24 +2,24 @@
 module.exports = {
   content: [
     "./App.tsx",
-    "./components/**/*.{js,jsx,ts,tsx}",
-    "./app/**/*.{js,jsx,ts,tsx}",
+    "./src/components/**/*.{js,jsx,ts,tsx}",
+    "./src/app/**/*.{js,jsx,ts,tsx}",
   ],
   darkMode: "class",
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Poppins-Regular"],
-        thin: ["Poppins-Thin"],
-        extralight: ["Poppins-ExtraLight"],
-        light: ["Poppins-Light"],
-        medium: ["Poppins-Medium"],
-        semibold: ["Poppins-SemiBold"],
-        bold: ["Poppins-Bold"],
-        extrabold: ["Poppins-ExtraBold"],
-        black: ["Poppins-Black"],
-        italic: ["Poppins-Italic"],
+        sans: ["Montserrat-Regular"],
+        thin: ["Montserrat-Thin"],
+        extralight: ["Montserrat-ExtraLight"],
+        light: ["Montserrat-Light"],
+        medium: ["Montserrat-Medium"],
+        semibold: ["Montserrat-SemiBold"],
+        bold: ["Montserrat-Bold"],
+        extrabold: ["Montserrat-ExtraBold"],
+        black: ["Montserrat-Black"],
+        italic: ["Montserrat-Italic"],
       },
       colors: {
         background: "hsl(var(--background) / <alpha-value>)",
