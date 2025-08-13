@@ -48,6 +48,7 @@ module.exports = {
         "chart-3": "hsl(var(--chart-3) / <alpha-value>)",
         "chart-4": "hsl(var(--chart-4) / <alpha-value>)",
         "chart-5": "hsl(var(--chart-5) / <alpha-value>)",
+        "muted-background": "hsl(var(--muted-background) / <alpha-value>)",
       },
     },
   },

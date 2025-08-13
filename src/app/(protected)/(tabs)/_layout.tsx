@@ -51,16 +51,28 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="(home)/index"
+        name="(home)"
         options={createTabOptions("Trang chủ", "house", "house.fill")}
       />
       <Tabs.Screen
-        name="profile"
-        options={createTabOptions("Hồ sơ", "person", "person.fill")}
+        name="products"
+        options={createTabOptions("Sản phẩm", "cube", "cube.fill")}
       />
       <Tabs.Screen
-        name="setting"
-        options={createTabOptions("Cài đặt", "gearshape", "gearshape.fill")}
+        name="inventory"
+        options={createTabOptions("Kho", "shippingbox", "shippingbox.fill")}
+      />
+      <Tabs.Screen
+        name="orders"
+        options={createTabOptions(
+          "Đơn hàng",
+          "list.bullet.rectangle.portrait",
+          "list.bullet.rectangle.portrait.fill"
+        )}
+      />
+      <Tabs.Screen
+        name="reports"
+        options={createTabOptions("Báo cáo", "chart.bar", "chart.bar.fill")}
       />
     </Tabs>
   );

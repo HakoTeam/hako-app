@@ -151,6 +151,81 @@ const MAPPING: IconMapping = {
     name: "settings-outline",
   },
 
+  // Report icons
+  "chart.bar.fill": {
+    library: "ionicons",
+    name: "stats-chart",
+  },
+  "chart.bar": {
+    library: "ionicons",
+    name: "stats-chart-outline",
+  },
+
+  // Warning icons
+  "exclamationmark.triangle": {
+    library: "ionicons",
+    name: "warning",
+  },
+
+  // Carts icons
+  cart: {
+    library: "ionicons",
+    name: "cart-outline",
+  },
+  "cart.fill": {
+    library: "ionicons",
+    name: "cart",
+  },
+
+  // Products icons
+  "cube.fill": {
+    library: "ionicons",
+    name: "cube",
+  },
+  cube: {
+    library: "ionicons",
+    name: "cube-outline",
+  },
+  // Inventory icons
+  "shippingbox.fill": {
+    library: "ionicons",
+    name: "albums",
+  },
+  shippingbox: {
+    library: "ionicons",
+    name: "albums-outline",
+  },
+  // Inventory icons
+  "list.bullet.rectangle.portrait.fill": {
+    library: "ionicons",
+    name: "receipt",
+  },
+  "list.bullet.rectangle.portrait": {
+    library: "ionicons",
+    name: "receipt-outline",
+  },
+
+  // Inventory icons
+  building: {
+    library: "materialcommunity",
+    name: "warehouse",
+  },
+  "tray.and.arrow.up": {
+    library: "materialcommunity",
+    name: "home-export-outline",
+  },
+  // Inventory check
+  checklist: {
+    library: "materialcommunity",
+    name: "text-box-check-outline",
+  },
+
+  // Transfer inventory
+  "arrow.left.arrow.right": {
+    library: "materialcommunity",
+    name: "transfer",
+  },
+
   // Search icons
   magnifyingglass: {
     library: "ionicons",
@@ -194,6 +269,54 @@ const MAPPING: IconMapping = {
     library: "ionicons",
     name: "star",
   },
+  // Crown icons
+  crown: {
+    library: "materialcommunity",
+    name: "crown-outline",
+  },
+  // Trending icons
+  "chart.line.uptrend.xyaxis": {
+    library: "ionicons",
+    name: "trending-up",
+  },
+  "chart.line.downtrend.xyaxis": {
+    library: "ionicons",
+    name: "trending-down",
+  },
+
+  // File chart icons
+  "chart.bar.doc.horizontal": {
+    library: "materialcommunity",
+    name: "file-chart-outline",
+  },
+  // File text icons
+  "doc.text": {
+    library: "feather",
+    name: "file-text",
+  },
+  // Menu icons
+  "line.3.horizontal": {
+    library: "ionicons",
+    name: "menu",
+  },
+  // Flash icons
+  "bolt.fill": {
+    library: "ionicons",
+    name: "flash",
+  },
+  "bolt.slash": {
+    library: "ionicons",
+    name: "flash-outline",
+  },
+  // User icons
+  "people.2": {
+    library: "ionicons",
+    name: "people-outline",
+  },
+  "people.2.fill": {
+    library: "ionicons",
+    name: "people",
+  },
 
   // Menu icons
   "line.horizontal.3": {
@@ -203,6 +326,38 @@ const MAPPING: IconMapping = {
   ellipsis: {
     library: "ionicons",
     name: "ellipsis-horizontal",
+  },
+
+  // camera icons
+  camera: {
+    library: "feather",
+    name: "camera",
+  },
+
+  // store icons
+  bag: {
+    library: "ionicons",
+    name: "storefront",
+  },
+  // filter icons
+  "line.3.horizontal.decrease": {
+    library: "feather",
+    name: "filter",
+  },
+  // sort icons
+  "arrow.up.arrow.down": {
+    library: "materialcommunity",
+    name: "sort",
+  },
+  // download icons
+  "square.and.arrow.down": {
+    library: "feather",
+    name: "download",
+  },
+  // upload icons
+  "square.and.arrow.up": {
+    library: "feather",
+    name: "upload",
   },
 
   // Examples using different libraries
@@ -223,30 +378,10 @@ const MAPPING: IconMapping = {
     name: "calendar",
   },
 
-  // Number icons (for tab bar or list items)
-  number: {
+  // calculator
+  calculator: {
     library: "materialcommunity",
-    name: "numeric",
-  },
-  "1.circle": {
-    library: "materialcommunity",
-    name: "numeric-1-circle",
-  },
-  "2.circle": {
-    library: "materialcommunity",
-    name: "numeric-2-circle",
-  },
-  "3.circle": {
-    library: "materialcommunity",
-    name: "numeric-3-circle",
-  },
-  "4.circle": {
-    library: "materialcommunity",
-    name: "numeric-4-circle",
-  },
-  "5.circle": {
-    library: "materialcommunity",
-    name: "numeric-5-circle",
+    name: "calculator",
   },
 };
 

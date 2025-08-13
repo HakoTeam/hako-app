@@ -119,4 +119,152 @@ export const strings = {
 
   // Logout
   logout: "Đăng xuất",
+
+  // MVP
+  // Navigation
+  navHome: "Trang chủ",
+  navProducts: "Sản phẩm",
+  navInventory: "Kho hàng",
+  navOrders: "Đơn hàng",
+  navInvoices: "Hóa đơn",
+  navReports: "Báo cáo",
+  navCustomers: "Khách hàng",
+  navIntegrations: "Tích hợp TMĐT",
+  navSubscription: "Gói dịch vụ",
+
+  // Dashboard
+  dashboardTitle: "Tổng quan",
+  todayRevenue: "Doanh thu hôm nay",
+  lowStock: "Tồn kho thấp",
+  newOrders: "Đơn hàng mới",
+  subscriptionStatus: "Trạng thái gói",
+  subscriptionBoxTitle: "Gói dùng thử",
+
+  // Products
+  productsTitle: "Quản lý sản phẩm",
+  productName: "Tên sản phẩm",
+  productSku: "Mã SKU",
+  retailPrice: "Giá bán lẻ",
+  wholesalePrice: "Giá bán sỉ",
+  stockQuantity: "Tồn kho",
+  addProduct: "Thêm sản phẩm",
+  editProduct: "Sửa sản phẩm",
+  deleteProduct: "Xóa sản phẩm",
+  scanBarcode: "Quét mã vạch",
+  voiceInput: "Nhập bằng giọng nói",
+  importExcel: "Nhập Excel",
+  exportExcel: "Xuất Excel",
+
+  // Inventory
+  inventoryTitle: "Quản lý kho",
+  stockIn: "Nhập kho",
+  stockOut: "Xuất kho",
+  transferStock: "Chuyển kho",
+  transactionType: "Loại giao dịch",
+  reason: "Lý do",
+  quantity: "Số lượng",
+  notes: "Ghi chú",
+
+  // Orders
+  ordersTitle: "Quản lý đơn hàng",
+  createOrder: "Tạo đơn hàng",
+  orderStatus: "Trạng thái",
+  orderTotal: "Tổng tiền",
+  orderTax: "Thuế",
+  selectCustomer: "Chọn khách hàng",
+  selectProduct: "Chọn sản phẩm",
+  syncOrders: "Đồng bộ đơn hàng",
+
+  // Invoices
+  invoicesTitle: "Hóa đơn điện tử",
+  createInvoice: "Tạo hóa đơn",
+  invoiceCode: "Mã hóa đơn",
+  issueDate: "Ngày xuất",
+  sInvoiceIntegration: "Tích hợp S-Invoice",
+
+  // Reports
+  reportsTitle: "Báo cáo",
+  revenueReport: "Báo cáo doanh thu",
+  stockReport: "Báo cáo tồn kho",
+  topProducts: "Sản phẩm bán chạy",
+  exportPdf: "Xuất PDF",
+  daily: "Theo ngày",
+  weekly: "Theo tuần",
+  monthly: "Theo tháng",
+
+  // Customers
+  customersTitle: "Quản lý khách hàng",
+  customerName: "Tên khách hàng",
+  customerPhone: "Số điện thoại",
+  customerType: "Loại khách hàng",
+  retail: "Bán lẻ",
+  wholesale: "Bán sỉ",
+  loyal: "Khách VIP",
+  purchaseHistory: "Lịch sử mua hàng",
+
+  // Integrations
+  integrationsTitle: "Tích hợp TMĐT",
+  shopeeIntegration: "Tích hợp Shopee",
+  tiktokIntegration: "Tích hợp TikTok Shop",
+  facebookIntegration: "Tích hợp Facebook Shop",
+  syncProducts: "Đồng bộ sản phẩm",
+  connectPlatform: "Kết nối nền tảng",
+
+  // Subscription
+  subscriptionTitle: "Gói dịch vụ",
+  freePlan: "Gói miễn phí",
+  payAsYouUsePlan: "Trả theo sử dụng",
+  premiumPlan: "Gói cao cấp",
+  trialRemaining: "Thời gian dùng thử còn lại",
+  usageCost: "Chi phí sử dụng",
+  upgrade: "Nâng cấp",
+  paymentInfo: "Thông tin thanh toán",
+
+  // Common
+  save: "Lưu",
+  cancel: "Hủy",
+  delete: "Xóa",
+  edit: "Sửa",
+  add: "Thêm",
+  search: "Tìm kiếm",
+  filter: "Lọc",
+  success: "Thành công",
+  confirm: "Xác nhận",
+  back: "Quay lại",
+  next: "Tiếp theo",
+  done: "Hoàn thành",
+
+  // Errors
+  errorLoadingData: "Lỗi khi tải dữ liệu",
+  errorSavingData: "Lỗi khi lưu dữ liệu",
+  errorInsufficientStock: "Không đủ hàng trong kho",
+  errorInvalidInput: "Dữ liệu nhập không hợp lệ",
+  errorNetworkConnection: "Lỗi kết nối mạng",
+  errorPermissionDenied: "Không có quyền truy cập",
+
+  // Success messages
+  productSaved: "Sản phẩm đã được lưu",
+  orderCreated: "Đơn hàng đã được tạo",
+  invoiceGenerated: "Hóa đơn đã được tạo",
+  stockUpdated: "Kho hàng đã được cập nhật",
+  customerSaved: "Khách hàng đã được lưu",
+  integrationConnected: "Tích hợp thành công",
+
+  notFoundTitle: "Không tìm thấy trang",
+  goHome: "Trở về trang chủ",
+  dayLeft: "Còn",
+  days: "ngày",
+  viewDashboard: "Xem thống kê",
+  feature: "Tính năng",
+  revenue: "Doanh thu",
+  compareLastDay: "so với hôm qua",
+  profit: "Lợi nhuận",
+  almostOutStock: "Sắp hết hàng",
+  products: "sản phẩm",
+  orders: "đơn hàng",
+  todayOrders: "Đơn hôm nay",
+  shopManager: "chủ shop",
+  hello: "Xin chào",
+  trials: "dùng thử",
+  quickActions: "Thao tác nhanh",
 };

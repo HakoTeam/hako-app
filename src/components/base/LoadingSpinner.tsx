@@ -8,6 +8,7 @@ interface LoadingSpinnerProps {
   className?: string;
   color?: string;
   size?: "large" | "small";
+  fullScreen?: boolean;
 }
 
 export function Loading({ className, color, size }: LoadingSpinnerProps) {
@@ -21,8 +22,9 @@ export function LoadingSpinner({
   className,
   color,
   size,
+  fullScreen = true,
 }: LoadingSpinnerProps) {
-  return (
+  return fullScreen ? (
     <ThemedView className="flex-1 justify-center items-center">
       <ActivityIndicator
         size={size}
@@ -35,5 +37,11 @@ export function LoadingSpinner({
         {message}
       </ThemedText>
     </ThemedView>
+  ) : (
+    <ActivityIndicator
+      size={size}
+      className={`${color ? `text-${color}` : "text-primary"} ${className}`}
+      color={color}
+    />
   );
 }

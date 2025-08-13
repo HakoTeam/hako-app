@@ -54,8 +54,8 @@ export default function ProtectedLayout() {
   }
 
   if (!hasOnboarded) return <Redirect href="/(auth)/onboarding" />;
-  if (!hasUserPhone) return <Redirect href="/(auth)/phone-input" />;
-  if (!isAuthenticated) return <Redirect href="/(auth)/login" />;
+  // if (!hasUserPhone) return <Redirect href="/(auth)/phone-input" />;
+  // if (!isAuthenticated) return <Redirect href="/(auth)/login" />;
 
   return (
     <Stack>

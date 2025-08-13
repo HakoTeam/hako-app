@@ -9,12 +9,11 @@ import Animated, {
 import { ThemedView } from "@/components/base/ThemedView";
 import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 
-const HEADER_HEIGHT = 250;
-
 type Props = PropsWithChildren<{
   headerImage?: ReactElement;
   className?: string;
   color?: string;
+  headerHeight?: number;
 }>;
 
 export default function ParallaxScrollView({
@@ -22,7 +21,9 @@ export default function ParallaxScrollView({
   headerImage,
   className,
   color,
+  headerHeight = 200,
 }: Props) {
+  const HEADER_HEIGHT = headerHeight;
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
@@ -70,7 +71,10 @@ export default function ParallaxScrollView({
         >
           {headerImage ? headerImage : null}
         </Animated.View>
-        <ThemedView className="flex-1 p-8 gap-4" color={color}>
+        <ThemedView
+          className={`flex-1 px-4 gap-4 ${headerImage ? "py-6" : "py-8"}`}
+          color={color}
+        >
           {children}
         </ThemedView>
       </Animated.ScrollView>

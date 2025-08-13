@@ -61,7 +61,7 @@ export const useUpdateUser = () => {
     },
     onSuccess: (data) => {
       // Update specific user in cache
-      queryClient.setQueryData(QUERY_KEYS.user(data.id), data);
+      queryClient.setQueryData(QUERY_KEYS.user(data.user_id), data);
       // Invalidate users list
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.users });
     },
